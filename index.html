@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="theme-color" content="#2f855a">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="習慣">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>習慣トラッカー</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <h1>習慣トラッカー</h1>
+    <p id="today-label" class="today-label"></p>
+  </header>
+
+  <main>
+    <p id="load-error" class="banner banner-error" role="alert" hidden></p>
+
+    <form id="add-form" class="add-form" autocomplete="off">
+      <label for="habit-name" class="visually-hidden">新しい習慣の名前</label>
+      <input id="habit-name" name="name" type="text" maxlength="30"
+             placeholder="新しい習慣 (例: 朝の散歩)" enterkeyhint="done">
+      <button type="submit">追加</button>
+    </form>
+    <p id="form-error" class="form-error" role="alert" hidden></p>
+
+    <p id="empty-message" class="empty" hidden>まだ習慣がありません。上の欄から追加してください。</p>
+    <ul id="habit-list" class="habit-list"></ul>
+
+    <section class="backup" aria-labelledby="backup-title">
+      <h2 id="backup-title">バックアップ</h2>
+      <p class="backup-note">記録はこの端末の中だけにあります。ときどき書き出して、安全な場所に保存してください。</p>
+      <div class="backup-buttons">
+        <button type="button" id="export-button">書き出す</button>
+        <button type="button" id="import-button">読み込む</button>
+        <input type="file" id="import-file" accept=".json,application/json" hidden>
+      </div>
+      <p id="backup-message" class="backup-message" role="status" hidden></p>
+    </section>
+  </main>
+
+  <dialog id="import-dialog" class="dialog" aria-labelledby="import-dialog-title">
+    <h2 id="import-dialog-title">今のデータを置き換えますか？</h2>
+    <dl class="dialog-summary">
+      <dt>読み込むファイル</dt>
+      <dd id="import-new"></dd>
+      <dt>今のデータ (消えます)</dt>
+      <dd id="import-current"></dd>
+    </dl>
+    <p class="dialog-warning">置き換えると、今のデータは元に戻せません。必要なら先に「書き出す」で保存してください。</p>
+    <div class="dialog-buttons">
+      <button type="button" id="import-cancel" class="secondary">やめる</button>
+      <button type="button" id="import-confirm" class="danger">置き換える</button>
+    </div>
+  </dialog>
+
+  <template id="habit-template">
+    <li class="habit">
+      <div class="habit-row">
+        <button type="button" class="check" aria-pressed="false">
+          <span class="check-mark" aria-hidden="true">✓</span>
+        </button>
+        <div class="habit-info">
+          <p class="habit-name"></p>
+          <p class="habit-stats">
+            <span class="streak"></span>
+            <span class="month-count"></span>
+          </p>
+        </div>
+      </div>
+      <details class="month">
+        <summary>今月の記録</summary>
+        <div class="calendar"></div>
+      </details>
+    </li>
+  </template>
+</body>
+</html>
